@@ -24,8 +24,8 @@ app.use(parser.urlencoded({
 
 app.use(parser.json())
 
-app.use(require(path.join(process.cwd(), '/middleware/authentication'))())
-app.all('*', require(path.join(process.cwd(), '/middleware/authorization')))
+// app.use(require(path.join(process.cwd(), '/middleware/authentication'))())
+// app.all('*', require(path.join(process.cwd(), '/middleware/authorization')))
 
 /**
  * Unhandled error handling
@@ -40,12 +40,11 @@ app.use((error, request, response, next) => {
  * Dev debugging logger
  */
 app.use((request, response, next) => {
+  // ${chalk.bgBlueBright('       [USER]        ')}
+  // ${chalk.blueBright(JSON.stringify(request.user ? request.user : {}, null, 2))}
   console.log(`
 ${chalk.bgGreenBright(' [REQUEST] ')} ${chalk.bgWhite.black(` [${request.method}] `)}
 ${chalk.bgBlackBright(` ${request.socket.remoteAddress} ==> ${request.originalUrl} `)}
-
-${chalk.bgBlueBright('       [USER]        ')}
-${chalk.blueBright(JSON.stringify(request.user ? request.user : {}, null, 2))}
 
 ${chalk.bgYellowBright('       [QUERY]       ')}
 ${chalk.yellowBright(JSON.stringify(request.query, null, 2))}
@@ -62,20 +61,20 @@ ${chalk.cyanBright(JSON.stringify(request.body, null, 2))}
 
 app.use('/', require(path.join(process.cwd(), '/routes')))
 
-let options = {}
-let server = http.createServer(options, app)
+const options = {}
+const server = http.createServer(options, app)
 
-try {
-  options = {
-    key: fs.readFileSync(path.join(process.cwd(), process.env.SSL_KEY), 'utf8'),
-    cert: fs.readFileSync(path.join(process.cwd(), process.env.SSL_CERTIFICATE), 'utf8'),
-    ca: fs.readFileSync(path.join(process.cwd(), process.env.SSL_BUNDLE_CERTIFICATE), 'utf8')
-  }
-
-  server = https.createServer(options, app)
-} catch (error) {
-  console.error('Unable to load SSL - Running on standard HTTP')
-}
+// try {
+//   options = {
+//     key: fs.readFileSync(path.join(process.cwd(), process.env.SSL_KEY), 'utf8'),
+//     cert: fs.readFileSync(path.join(process.cwd(), process.env.SSL_CERTIFICATE), 'utf8'),
+//     ca: fs.readFileSync(path.join(process.cwd(), process.env.SSL_BUNDLE_CERTIFICATE), 'utf8')
+//   }
+//
+//   server = https.createServer(options, app)
+// } catch (error) {
+//   console.error('Unable to load SSL - Running on standard HTTP')
+// }
 
 const io = new socket.Server(server, {
   allowEIO3: true,
