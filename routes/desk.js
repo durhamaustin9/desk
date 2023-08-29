@@ -13,4 +13,13 @@ router.get('/', async (request, response) => {
   })
 })
 
+/**
+ *  Request a verification user from the query: phoneNumber
+ **/
+router.get('/test', async (request, response) => {
+  response.status(200).json({
+    test: 'test'
+  })
+})
+
 module.exports = router
